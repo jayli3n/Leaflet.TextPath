@@ -21,8 +21,8 @@ var PolylineTextPath = {
 
     onRemove: function (map) {
         map = map || this._map;
-        if (map && this._textNode && map._renderer._container)
-            map._renderer._container.removeChild(this._textNode);
+        if (map && this._textNode && this._renderer._container)
+            this._renderer._container.removeChild(this._textNode);
         __onRemove.call(this, map);
     },
 
@@ -51,7 +51,7 @@ var PolylineTextPath = {
         /* If not in SVG mode or Polyline not added to map yet return */
         /* setText will be called by onAdd, using value stored in this._text */
         if (!L.Browser.svg || typeof this._map === 'undefined') {
-          return this;
+            return this;
         }
 
         var defaults = {
@@ -65,7 +65,7 @@ var PolylineTextPath = {
         /* If empty text, hide */
         if (!text) {
             if (this._textNode && this._textNode.parentNode) {
-                this._map._renderer._container.removeChild(this._textNode);
+                this._renderer._container.removeChild(this._textNode);
                 
                 /* delete the node, so it will not be removed a 2nd time if the layer is later removed from the map */
                 delete this._textNode;
@@ -75,7 +75,7 @@ var PolylineTextPath = {
 
         text = text.replace(/ /g, '\u00A0');  // Non breakable spaces
         var id = 'pathdef-' + L.Util.stamp(this);
-        var svg = this._map._renderer._container;
+        var svg = this._renderer._container;
         this._path.setAttribute('id', id);
 
         if (options.repeat) {
@@ -147,7 +147,7 @@ var PolylineTextPath = {
             }
 
             var events = ['click', 'dblclick', 'mousedown', 'mouseover',
-                          'mouseout', 'mousemove', 'contextmenu'];
+                            'mouseout', 'mousemove', 'contextmenu'];
             for (var i = 0; i < events.length; i++) {
                 L.DomEvent.on(textNode, events[i], this.fire, this);
             }

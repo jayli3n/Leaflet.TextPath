@@ -100,6 +100,9 @@
     
             textNode.classList.add("leaflet-textpath-node")
             textPath.classList.add("leaflet-textpath-path")
+            textPath.style.fontSize = "unset"
+            textPath.style.fontWeight = "unset"
+
             textPath.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", '#'+id);
             textNode.setAttribute('dy', dy);
             for (var attr in options.attributes)
@@ -145,7 +148,7 @@
             /* Initialize mouse events for the additional nodes */
             if (this.options.interactive) {
                 if (L.Browser.svg || !L.Browser.vml) {
-                    textPath.setAttribute('class', 'leaflet-interactive');
+                    textPath.classList.add('leaflet-interactive')
                 }
     
                 var events = ['click', 'dblclick', 'mousedown', 'mouseover',

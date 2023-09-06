@@ -37,10 +37,20 @@
         },
     
         _textRedraw: function () {
-            var text = this._text,
-                options = this._textOptions;
+
+            var text = this._text;
+            var options = this._textOptions;
+
+            clearTimeout(this.debounceTimeout)
             if (text) {
-                this._setText(null)._setText(text, options);
+                this._setText(null)
+
+                // This is a trick to make it more performant
+                this._text = text;
+                this._textOptions = options;
+                this.debounceTimeout = setTimeout(() => {
+                    this._setText(text, options)
+                }, 80);
             }
         },
     
@@ -72,7 +82,7 @@
                 }
                 return this;
             }
-    
+
             text = text.replace(/ /g, '\u00A0');  // Non breakable spaces
             var id = 'pathdef-' + L.Util.stamp(this);
             var svg = this._renderer._container;
@@ -162,8 +172,7 @@
         },
     
         setText: function(text, options) {
-            this._setText(null)
-            this._setText(text, options)
+            this._setText(null)._setText(text, options)
         },
     };
     

@@ -6,16 +6,20 @@
 
 (function () {
 
-    var __onAdd = L.Polyline.prototype.onAdd,
-        __onRemove = L.Polyline.prototype.onRemove,
-        __updatePath = L.Polyline.prototype._updatePath,
-        __bringToFront = L.Polyline.prototype.bringToFront;
+    var __onAddPolyline = L.Polyline.prototype.onAdd;
+    var __onRemovePolyline = L.Polyline.prototype.onRemove;
+    var __updatePathPolyline = L.Polyline.prototype._updatePath;
+    var __bringToFrontPolyline = L.Polyline.prototype.bringToFront;
     
-    
-    var PolylineTextPath = {
+    var __onAddPolygon = L.Polygon.prototype.onAdd;
+    var __onRemovePolygon = L.Polygon.prototype.onRemove;
+    var __updatePathPolygon = L.Polygon.prototype._updatePath;
+    var __bringToFrontPolygon = L.Polygon.prototype.bringToFront;
+        
+    var PolylineTextPath = (isPolygon) => ({
     
         onAdd: function (map) {
-            __onAdd.call(this, map);
+            (isPolygon ? __onAddPolygon : __onAddPolyline).call(this, map);
             this._textRedraw();
         },
     
@@ -23,16 +27,16 @@
             map = map || this._map;
             if (map && this._textNode && this._renderer._container)
                 this._renderer._container.removeChild(this._textNode);
-            __onRemove.call(this, map);
+            (isPolygon ? __onRemovePolygon : __onRemovePolyline).call(this, map);
         },
     
         bringToFront: function () {
-            __bringToFront.call(this);
+            (isPolygon ? __bringToFrontPolygon : __bringToFrontPolyline).call(this);
             this._textRedraw();
         },
     
         _updatePath: function () {
-            __updatePath.call(this);
+            (isPolygon ? __updatePathPolygon : __updatePathPolyline).call(this);
             this._textRedraw();
         },
     
@@ -174,9 +178,11 @@
         setText: function(text, options) {
             this._setText(null)._setText(text, options)
         },
-    };
+    });
     
-    L.Polyline.include(PolylineTextPath);
+    L.Polyline.include(PolylineTextPath(false));
+    
+    L.Polygon.include(PolylineTextPath(true));
     
     L.LayerGroup.include({
         setText: function(text, options) {
